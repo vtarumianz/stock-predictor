@@ -166,8 +166,8 @@ if analyze_button:
             ticker_obj = yf.Ticker(ticker)
             info = ticker_obj.info
             
-            current_price = data['Close'].iloc[-1]
-            previous_close = data['Close'].iloc[-2] if len(data) > 1 else current_price
+            current_price = float(data['Close'].iloc[-1])
+            previous_close = float(data['Close'].iloc[-2]) if len(data) > 1 else current_price
             price_change = current_price - previous_close
             price_change_pct = (price_change / previous_close) * 100 if previous_close != 0 else 0
             
