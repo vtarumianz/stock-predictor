@@ -194,10 +194,10 @@ if analyze_button:
             
             with col5:
                 volume = data['Volume'].iloc[-1]
-                if pd.isna(volume):
+                if pd.isna(volume) or not np.isfinite(volume):
                     st.metric("Volume", "N/A")
                 else:
-                    st.metric("Volume", f"{volume:,.0f}")
+                    st.metric("Volume", f"{int(volume):,.0f}")
             
             st.markdown("---")
             
@@ -336,25 +336,40 @@ if analyze_button:
             
             with col1:
                 rsi = data['RSI'].iloc[-1]
-                rsi_status = "Overbought" if rsi > 70 else "Oversold" if rsi < 30 else "Neutral"
-                st.metric("RSI (14)", f"{rsi:.2f}", rsi_status)
+                if pd.isna(rsi) or not np.isfinite(rsi):
+                    st.metric("RSI (14)", "N/A")
+                else:
+                    rsi_status = "Overbought" if rsi > 70 else "Oversold" if rsi < 30 else "Neutral"
+                    st.metric("RSI (14)", f"{rsi:.2f}", rsi_status)
             
             with col2:
                 macd = data['MACD'].iloc[-1]
                 signal = data['Signal'].iloc[-1]
-                macd_status = "Bullish" if macd > signal else "Bearish"
-                st.metric("MACD", f"{macd:.4f}", macd_status)
+                if pd.isna(macd) or pd.isna(signal) or not np.isfinite(macd) or not np.isfinite(signal):
+                    st.metric("MACD", "N/A")
+                else:
+                    macd_status = "Bullish" if macd > signal else "Bearish"
+                    st.metric("MACD", f"{macd:.4f}", macd_status)
             
             with col3:
                 sma_20 = data['SMA_20'].iloc[-1]
                 sma_50 = data['SMA_50'].iloc[-1]
-                golden_cross = "Golden Cross" if sma_20 > sma_50 else "Death Cross"
-                st.metric("SMA 20/50", f"{sma_20:.2f}", golden_cross)
+                if pd.isna(sma_20) or pd.isna(sma_50) or not np.isfinite(sma_20) or not np.isfinite(sma_50):
+                    st.metric("SMA 20/50", "N/A")
+                else:
+                    golden_cross = "Golden Cross" if sma_20 > sma_50 else "Death Cross"
+                    st.metric("SMA 20/50", f"{sma_20:.2f}", golden_cross)
             
             with col4:
-                bb_position = ((data['Close'].iloc[-1] - data['BB_Lower'].iloc[-1]) / 
-                              (data['BB_Upper'].iloc[-1] - data['BB_Lower'].iloc[-1])) * 100
-                st.metric("BB Position", f"{bb_position:.1f}%", "Near Upper" if bb_position > 80 else "Near Lower" if bb_position < 20 else "Middle")
+                try:
+                    bb_position = ((data['Close'].iloc[-1] - data['BB_Lower'].iloc[-1]) / 
+                                  (data['BB_Upper'].iloc[-1] - data['BB_Lower'].iloc[-1])) * 100
+                    if pd.isna(bb_position) or not np.isfinite(bb_position):
+                        st.metric("BB Position", "N/A")
+                    else:
+                        st.metric("BB Position", f"{bb_position:.1f}%", "Near Upper" if bb_position > 80 else "Near Lower" if bb_position < 20 else "Middle")
+                except (ZeroDivisionError, TypeError, ValueError):
+                    st.metric("BB Position", "N/A")
             
             st.markdown("---")
             
@@ -366,18 +381,26 @@ if analyze_button:
             current_price = data['Close'].iloc[-1]
             predicted_price = forecast_df['Predicted_Price'].iloc[-1]
             price_diff = predicted_price - current_price
-            price_diff_pct = (price_diff / current_price) * 100
+            price_diff_pct = (price_diff / current_price) * 100 if current_price != 0 else 0
             
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                st.metric("Current Price", f"${current_price:.2f}")
+                if pd.isna(current_price) or not np.isfinite(current_price):
+                    st.metric("Current Price", "N/A")
+                else:
+                    st.metric("Current Price", f"${current_price:.2f}")
             
             with col2:
-                st.metric(f"Predicted Price ({prediction_days}d)", f"${predicted_price:.2f}")
+                if pd.isna(predicted_price) or not np.isfinite(predicted_price):
+                    st.metric(f"Predicted Price ({prediction_days}d)", "N/A")
+                else:
+                    st.metric(f"Predicted Price ({prediction_days}d)", f"${predicted_price:.2f}")
             
             with col3:
-                if price_diff >= 0:
+                if pd.isna(price_diff) or not np.isfinite(price_diff) or pd.isna(price_diff_pct) or not np.isfinite(price_diff_pct):
+                    st.metric(f"Price Difference", "N/A")
+                elif price_diff >= 0:
                     st.markdown(f'<div class="prediction-positive">Expected: +${price_diff:.2f} ({price_diff_pct:.2f}%)</div>', 
                                unsafe_allow_html=True)
                 else:
