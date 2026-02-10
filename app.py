@@ -176,15 +176,15 @@ if analyze_button:
             col1, col2, col3, col4, col5 = st.columns(5)
             
             with col1:
-                st.metric("Current Price", f"${current_price:.2f}", f"{price_change:.2f} ({price_change_pct:.2f}%)")
+                st.metric("Current Price", f"${current_price:.2f}", f"{price_change:.2f} ({price_change_pct:.2f}%)" if not pd.isna(price_change) else "N/A")
             
             with col2:
-                high_52w = info.get('fiftyTwoWeekHigh', 'N/A')
-                st.metric("52W High", f"${high_52w:.2f}" if high_52w != 'N/A' else high_52w)
+                high_52w = info.get('fiftyTwoWeekHigh', None)
+                st.metric("52W High", f"${high_52w:.2f}" if high_52w is not None and not pd.isna(high_52w) else "N/A")
             
             with col3:
-                low_52w = info.get('fiftyTwoWeekLow', 'N/A')
-                st.metric("52W Low", f"${low_52w:.2f}" if low_52w != 'N/A' else low_52w)
+                low_52w = info.get('fiftyTwoWeekLow', None)
+                st.metric("52W Low", f"${low_52w:.2f}" if low_52w is not None and not pd.isna(low_52w) else "N/A")
             
             with col4:
                 trend, trend_color = determine_trend(data)
@@ -194,7 +194,10 @@ if analyze_button:
             
             with col5:
                 volume = data['Volume'].iloc[-1]
-                st.metric("Volume", f"{volume:,.0f}")
+                if pd.isna(volume):
+                    st.metric("Volume", "N/A")
+                else:
+                    st.metric("Volume", f"{volume:,.0f}")
             
             st.markdown("---")
             
