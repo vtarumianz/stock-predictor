@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/cache/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Node modules (if using js tools)
+node_modules/
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Other
+.cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# IDE specific
+.vscode/settings.json
+.idea/
+
+# CI/CD
+.github/workflows/secrets/
